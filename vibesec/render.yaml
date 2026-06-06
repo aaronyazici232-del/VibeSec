@@ -1,0 +1,15 @@
+# One-click deploy to Render (https://render.com) — free tier.
+# Put this folder at the root of a Git repo, then on Render:
+#   New +  ->  Blueprint  ->  pick your repo. That's it.
+#
+# Do NOT add an ANTHROPIC_API_KEY here: this is a bring-your-own-key deployment,
+# so each visitor supplies their own key. Adding one would bill every scan to you.
+services:
+  - type: web
+    name: vibesec
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: HOST
+        value: 0.0.0.0

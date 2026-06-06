@@ -1,0 +1,2 @@
+# Only needed for the AI deep-scan proxy. The built-in scanner needs nothing.
+anthropic

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VibeSec — security checks for vibe-coded projects</title>
+  <meta name="description" content="Drop in your code and get a plain-English security report with fixes. Runs in your browser — your code never leaves your machine." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="logo">🛡️</span>
+      <div>
+        <h1>VibeSec</h1>
+        <p class="tagline">Paste your code. Get the security risks — and how to fix them.</p>
+      </div>
+    </div>
+    <span class="privacy-pill" title="The built-in scan runs entirely in your browser.">🔒 Runs locally — your code stays on your machine</span>
+  </header>
+
+  <main>
+    <!-- ------------------------------------------------ INPUT ------------------------------------------------ -->
+    <section class="input-card" id="inputCard">
+      <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Upload code files">
+        <div class="drop-inner">
+          <span class="drop-icon">📁</span>
+          <p class="drop-title">Drag &amp; drop your code files here</p>
+          <p class="drop-sub">or <button type="button" id="browseBtn" class="link-btn">browse files</button> — multiple files welcome</p>
+          <input type="file" id="fileInput" multiple hidden />
+        </div>
+      </div>
+
+      <div class="paste-divider"><span>or paste code below</span></div>
+
+      <textarea id="codeInput" spellcheck="false" placeholder="Paste your code here…  (any language — JavaScript, Python, etc.)"></textarea>
+
+      <div id="fileList" class="file-list" hidden></div>
+
+      <div class="controls">
+        <button id="scanBtn" class="primary-btn">🔍 Scan for security risks</button>
+        <button id="sampleBtn" class="ghost-btn" title="Load a deliberately insecure snippet to see how it works">Try a vulnerable example</button>
+        <button id="clearBtn" class="ghost-btn">Clear</button>
+
+        <label class="ai-toggle" id="aiToggleWrap" title="Send code to Claude for a deeper review (needs the local server + an API key).">
+          <input type="checkbox" id="aiToggle" />
+          <span class="ai-toggle-track"><span class="ai-toggle-thumb"></span></span>
+          <span class="ai-toggle-label">🤖 Deep scan with Claude AI <em id="aiStatus" class="ai-status">checking…</em></span>
+        </label>
+      </div>
+
+      <div id="aiKeyPanel" class="ai-key-panel" hidden>
+        <div class="ai-key-row">
+          <span class="ai-key-icon">🔑</span>
+          <input type="password" id="apiKeyInput" placeholder="Your Anthropic API key — sk-ant-…"
+                 autocomplete="off" autocapitalize="off" spellcheck="false" />
+          <button type="button" id="toggleKeyVis" class="key-vis" title="Show / hide key">👁</button>
+          <button type="button" id="forgetKeyBtn" class="ghost-btn small" title="Remove the saved key">Forget</button>
+        </div>
+        <label class="ai-key-remember">
+          <input type="checkbox" id="rememberKey" checked /> Remember on this device
+        </label>
+        <p class="ai-key-note">
+          🔒 Your key is stored only in <strong>this browser</strong> and sent to the scan server
+          solely to relay your request to Anthropic — it’s <strong>never stored or logged</strong> there.
+          Get one at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>.
+          Don’t paste API keys into sites you don’t trust.
+        </p>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------ RESULTS ------------------------------------------------ -->
+    <section id="results" class="results" hidden>
+      <div class="score-card">
+        <div class="gauge" id="gauge">
+          <div class="gauge-num"><span id="scoreNum">--</span><small>/100</small></div>
+          <div class="gauge-grade" id="scoreGrade">—</div>
+        </div>
+        <div class="score-meta">
+          <h2 id="scoreHeadline">Security report</h2>
+          <p id="scoreSummary" class="score-summary"></p>
+          <div class="sev-counts" id="sevCounts"></div>
+          <div class="score-actions">
+            <button id="copyReportBtn" class="copy-btn" hidden>📋 Copy fix report for AI</button>
+            <span class="copy-hint">Paste this into Claude / Cursor / your coding AI to fix the issues</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="aiPanel" class="ai-panel" hidden>
+        <div class="ai-panel-head">
+          <span>🤖 Claude AI deep scan</span>
+          <span id="aiPanelStatus" class="ai-panel-status"></span>
+        </div>
+        <p id="aiSummary" class="ai-summary"></p>
+      </div>
+
+      <div class="findings-toolbar" id="findingsToolbar">
+        <span class="findings-count" id="findingsCount"></span>
+        <div class="filter-chips" id="filterChips"></div>
+      </div>
+
+      <div id="findingsList" class="findings-list"></div>
+
+      <div id="emptyState" class="empty-state" hidden>
+        <span class="empty-icon">✅</span>
+        <h3>No obvious issues found by the built-in checks.</h3>
+        <p>That’s a good sign — but it’s not a guarantee. These are pattern-based heuristics, not a full audit. For deeper analysis, try the <strong>Claude AI deep scan</strong> toggle above.</p>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      VibeSec uses heuristic checks to catch common mistakes. It can miss real issues and occasionally flag harmless code.
+      Treat it as a helpful first pass, not a substitute for a professional security review.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <span>Built for people shipping fast. 🚀</span>
+  </footer>
+
+  <script src="rules.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
